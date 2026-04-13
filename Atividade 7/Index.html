@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pedra, Papel ou Tesoura</title>
+
+  <!-- Ligando o CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Pedra, Papel ou Tesoura</h1>
+
+<div class="botoes">
+  <button onclick="jogar('pedra')"> Pedra</button>
+  <button onclick="jogar('papel')"> Papel</button>
+  <button onclick="jogar('tesoura')"> Tesoura</button>
+</div>
+
+<p id="resultado"></p>
+
+<script>
+function escolhaComputador() {
+  let random = Math.random();
+
+  if (random < 0.33) return 'pedra';
+  if (random < 0.66) return 'papel';
+  return 'tesoura';
+}
+
+function determinarVencedor(usuario, computador) {
+  if (usuario === computador) return "Empate!";
+
+  if (
+    (usuario === 'pedra' && computador === 'tesoura') ||
+    (usuario === 'tesoura' && computador === 'papel') ||
+    (usuario === 'papel' && computador === 'pedra')
+  ) {
+    return "Você venceu!";
+  }
+
+  return "Computador venceu!";
+}
+
+function jogar(escolhaUsuario) {
+  let escolhaPC = escolhaComputador();
+  let resultado = determinarVencedor(escolhaUsuario, escolhaPC);
+
+  document.getElementById("resultado").innerHTML =
+    `Você: ${escolhaUsuario} <br>
+     PC: ${escolhaPC} <br>
+     Resultado: ${resultado}`;
+}
+</script>
+
+</body>
+</html>
