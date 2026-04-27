@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade 9 - Funções na Tela</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
+        .box { background: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #1a73e8; font-size: 1.2rem; margin-top: 0; }
+        input { padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 8px 15px; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #1557b0; }
+        .resultado { margin-top: 10px; font-weight: bold; color: #d93025; }
+    </style>
+</head>
+<body>
+
+    <h1>Atividade 9 - Exercícios de Funções</h1>
+
+    <div class="box">
+        <h2>1. Maior de Três Números</h2>
+        <input type="number" id="f1_n1" placeholder="Núm 1">
+        <input type="number" id="f1_n2" placeholder="Núm 2">
+        <input type="number" id="f1_n3" placeholder="Núm 3">
+        <button onclick="executarF1()">Ver Maior</button>
+        <div id="res1" class="resultado"></div>
+    </div>
+
+    <div class="box">
+        <h2>2. Ordem Crescente</h2>
+        <input type="number" id="f2_n1" placeholder="Núm 1">
+        <input type="number" id="f2_n2" placeholder="Núm 2">
+        <input type="number" id="f2_n3" placeholder="Núm 3">
+        <button onclick="executarF2()">Ordenar</button>
+        <div id="res2" class="resultado"></div>
+    </div>
+
+    <div class="box">
+        <h2>3. Verificar Palíndromo</h2>
+        <input type="text" id="f3_texto" placeholder="Digite uma frase ou palavra">
+        <button onclick="executarF3()">Verificar</button>
+        <div id="res3" class="resultado"></div>
+    </div>
+
+    <div class="box">
+        <h2>4. Verificar Subconjunto</h2>
+        <input type="text" id="f4_p1" placeholder="Palavra principal">
+        <input type="text" id="f4_p2" placeholder="Subconjunto?">
+        <button onclick="executarF4()">Verificar</button>
+        <div id="res4" class="resultado"></div>
+    </div>
+
+    <div class="box">
+        <h2>5. Dia da Semana</h2>
+        <input type="date" id="f5_data">
+        <button onclick="executarF5()">Ver Dia</button>
+        <div id="res5" class="resultado"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
