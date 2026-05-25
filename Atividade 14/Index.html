@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ptbr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformador de Texto</title>
+    <style>
+        body{
+            font-family: Arial,sans-serif;
+            margin: 40px;
+        }
+        .container{
+            margin-bottom: 20px;
+        }
+        input[type="text"]{
+            padding: 8px;
+            width: 300px;
+            font-size: 16px;
+        }
+        label{
+            margin-right: 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Transformador de Letras</h2>
+    <div class="container">
+        <input type="text" id="meuInputText" placeholder="Digite seu text aqui...">
+    </div>
+    <div class="container">
+        <input type="radio" id="radioMaiuscula" name="transformacao" value="maiuscula" onclick="transformarTexto()">
+        <label for="radioMauscula">Maiúsculas</label>
+
+        <input type="radio" id="radioMinuscula" name="transformacao" value="minuscula" onclick="transformarTexto()">
+        <label for="radioMinuscula">Minúscula</label>
+    </div>
+    <script>
+        function transformarTexto(){
+            const inputText = document.getElementById('meuInputText');
+            const optMaiuscula = document.getElementById('radioMaiuscula');
+            const optMinuscula = document.getElementById('radioMinuscula');
+            if(optMaiuscula.checked){
+            inputText.value = inputText.value.toUpperCase();
+         }else if(optMinuscula.checked){
+            inputText.value = inputText.value.toLowerCase();
+            }
+        }
+        document.getElementById('meuInputText').addEventListener('input', transformarTexto);
+    </script>
+</body>
+</html>
