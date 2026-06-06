@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estocaí - PDV & Inventário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased hidden-scrollbar">
+
+    <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 fade-in">
+        <div class="bg-white p-10 rounded-[32px] shadow-xl w-full max-w-md text-center border border-orange-100">
+            <div class="w-20 h-20 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-orange-600 shadow-sm">
+                <i data-lucide="package-search" class="w-10 h-10"></i>
+            </div>
+            <h1 class="text-3xl font-black text-gray-800 tracking-tight mb-2">Estocaí</h1>
+            <p class="text-gray-500 mb-8 font-medium">Gestão inteligente para o seu negócio</p>
+            
+            <form id="login-form" class="space-y-4">
+                <input type="email" placeholder="Seu e-mail" class="w-full px-5 py-4 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-orange-500 transition-all outline-none font-medium text-gray-700" required>
+                <input type="password" placeholder="Sua senha" class="w-full px-5 py-4 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-orange-500 transition-all outline-none font-medium text-gray-700" required>
+                <button type="submit" class="w-full bg-orange-600 text-white font-bold py-4 rounded-xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-600/30">
+                    Entrar no Sistema
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="hidden h-screen flex flex-col md:flex-row fade-in overflow-hidden">
+        
+        <aside class="w-full md:w-72 bg-white border-r border-gray-100 flex flex-col shadow-sm z-10 h-full">
+            <div class="p-8 flex items-center gap-3">
+                <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600">
+                    <i data-lucide="package-search" class="w-6 h-6"></i>
+                </div>
+                <h1 class="text-2xl font-black text-gray-800 tracking-tight">Estocaí</h1>
+            </div>
+            
+            <nav class="flex-1 px-6 space-y-2 overflow-y-auto">
+                <button data-target="vendas" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all bg-orange-50 text-orange-600">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i> Vendas (PDV)
+                </button>
+                <button data-target="estoque" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all">
+                    <i data-lucide="layers" class="w-5 h-5"></i> Inventário
+                </button>
+                <button data-target="cardapio" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all">
+                    <i data-lucide="layout-grid" class="w-5 h-5"></i> Cardápio Web
+                </button>
+                <button data-target="qrcode" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 font-bold hover:bg-orange-50 hover:text-orange-600 transition-all">
+                    <i data-lucide="qr-code" class="w-5 h-5"></i> Gerar QR Code
+                </button>
+            </nav>
+
+            <div class="p-6 bg-white border-t border-gray-50">
+                <button id="btn-logout" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 font-bold hover:bg-red-50 transition-all">
+                    <i data-lucide="log-out" class="w-5 h-5"></i> Sair da conta
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-10 bg-gray-50/50 overflow-y-auto h-full">
+            <div id="views-container" class="max-w-6xl mx-auto pb-10">
+                
+                <div id="view-vendas" class="space-y-6 fade-in h-full flex flex-col">
+                    <h2 class="text-2xl font-bold text-gray-800 tracking-tight text-orange-900">Ponto de Venda (Caixa)</h2>
+                    
+                    <div class="flex flex-col lg:flex-row gap-6 min-h-[500px] h-[calc(100vh-140px)]">
+                        <div class="flex-1 bg-white p-6 rounded-[32px] shadow-sm border border-gray-100 flex flex-col">
+                            <h3 class="text-lg font-bold text-gray-700 mb-4">Catálogo Rápido</h3>
+                            <div id="pdv-produtos" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto pr-2 pb-4">
+                                </div>
+                        </div>
+
+                        <div class="w-full lg:w-96 bg-white p-6 rounded-[32px] shadow-sm border border-gray-100 flex flex-col">
+                            <h3 class="text-lg font-bold text-gray-700 mb-4 flex justify-between items-center">
+                                Pedido Atual <span id="badge-itens" class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm">0 itens</span>
+                            </h3>
+                            
+                            <div id="pdv-carrinho" class="flex-1 overflow-y-auto mb-4 border-b border-gray-100 pb-4 space-y-3">
+                                <div class="text-center text-gray-400 mt-10" id="carrinho-vazio">
+                                    <i data-lucide="shopping-bag" class="w-10 h-10 mx-auto mb-2 opacity-50"></i>
+                                    <p>Nenhum item selecionado</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3 pt-2">
+                                <div class="flex justify-between text-xl font-black text-gray-800 mb-4">
+                                    <span>Total:</span>
+                                    <span id="pdv-total">R$ 0,00</span>
+                                </div>
+                                <button id="btn-finalizar-venda" class="w-full bg-green-500 text-white font-bold py-4 rounded-xl hover:bg-green-600 transition-all shadow-lg shadow-green-500/30 flex justify-center items-center gap-2">
+                                    <i data-lucide="check-circle" class="w-5 h-5"></i> Finalizar Venda
+                                </button>
+                                <button id="btn-limpar-carrinho" class="w-full bg-red-50 text-red-500 font-bold py-3 rounded-xl hover:bg-red-100 transition-all">
+                                    Cancelar Pedido
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-estoque" class="hidden space-y-6 fade-in">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <h2 class="text-2xl font-bold text-gray-800 tracking-tight text-orange-900">Gestão de Inventário</h2>
+                        <button id="btn-novo-item" class="bg-gray-800 text-white px-6 py-3 rounded-2xl font-bold hover:bg-black flex items-center justify-center gap-2 transition-all shadow-lg">
+                             <i data-lucide="plus" class="w-5 h-5"></i> Novo Item
+                        </button>
+                    </div>
+
+                    <div class="flex bg-gray-100 p-1.5 rounded-2xl w-full max-w-md mx-auto md:mx-0">
+                        <button id="tab-estoque-dia" class="flex-1 py-3 text-sm font-bold rounded-xl transition-all flex items-center justify-center gap-2 bg-white text-orange-600 shadow-sm">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i> Estoque do Dia
+                        </button>
+                        <button id="tab-estoque-geral" class="flex-1 py-3 text-sm font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-gray-500 hover:text-gray-700">
+                            <i data-lucide="archive" class="w-4 h-4"></i> Estoque Geral
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100 mt-6">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="bg-gray-50 border-b border-gray-100 text-gray-400 uppercase font-bold text-[10px] tracking-widest">
+                                        <th class="px-6 md:px-8 py-5">Item / Produto</th>
+                                        <th class="px-6 md:px-8 py-5">Quantidade</th>
+                                        <th class="px-6 md:px-8 py-5 text-right">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-estoque" class="divide-y divide-gray-50">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-cardapio" class="hidden space-y-6 fade-in">
+                    <h2 class="text-2xl font-bold text-gray-800 tracking-tight text-orange-900">Cardápio Digital</h2>
+                    <div class="p-8 bg-white rounded-[32px] shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center gap-4">
+                        <i data-lucide="smartphone" class="w-12 h-12 opacity-50 text-orange-500"></i>
+                        <p class="text-gray-500 font-medium max-w-md">O cardápio digital roda em uma página separada para os clientes acessarem via celular.</p>
+                        <a href="cardapio.html" target="_blank" class="px-6 py-3 bg-orange-100 text-orange-700 font-bold rounded-xl hover:bg-orange-200 transition-all flex items-center gap-2 mt-2">
+                            Acessar Página do Cardápio <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="view-qrcode" class="hidden space-y-6 fade-in">
+                    <h2 class="text-2xl font-bold text-gray-800 tracking-tight text-orange-900">Gerador de QR Code</h2>
+                    <div class="p-8 bg-white rounded-[32px] shadow-sm border border-gray-100 text-center flex flex-col items-center gap-6">
+                        
+                        <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100 max-w-md w-full">
+                            <p class="text-orange-800 font-medium text-sm mb-3">Link do seu Cardápio Digital:</p>
+                            <div class="flex gap-2">
+                                <input type="text" id="qr-url-input" class="w-full px-4 py-3 rounded-xl bg-white border border-orange-200 focus:ring-2 focus:ring-orange-500 outline-none transition-all text-gray-600 text-sm" readonly>
+                                <button id="btn-gerar-qr" class="bg-orange-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-700 transition-all shadow-md flex items-center gap-2">
+                                    <i data-lucide="zap" class="w-4 h-4"></i> Gerar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="qrcode-container" class="p-6 bg-white border-2 border-dashed border-gray-200 rounded-3xl hidden flex flex-col items-center gap-4">
+                            <div id="qrcode-imagem"></div>
+                            <p class="text-xs text-gray-400 font-medium">Aponte a câmera para testar</p>
+                        </div>
+                        
+                        <button id="btn-imprimir-qr" class="hidden mt-2 text-orange-600 font-bold hover:text-orange-800 transition-colors flex items-center gap-2 px-6 py-3 bg-orange-50 rounded-xl">
+                            <i data-lucide="printer" class="w-5 h-5"></i> Imprimir QR Code
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+    <div id="modal-produto" class="hidden fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center fade-in px-4">
+        <div class="bg-white rounded-[32px] p-8 w-full max-w-md shadow-2xl border border-gray-100 relative">
+            <h3 id="modal-titulo" class="text-2xl font-black text-gray-800 tracking-tight mb-6 text-orange-900">Novo Item</h3>
+            
+            <form id="form-produto" class="space-y-4">
+                <input type="hidden" id="prod-id"> <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Nome do Item</label>
+                    <input type="text" id="prod-nome" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:ring-2 focus:ring-orange-500 outline-none font-medium text-gray-700">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Preço (R$)</label>
+                        <input type="number" id="prod-preco" step="0.01" min="0" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:ring-2 focus:ring-orange-500 outline-none font-medium text-gray-700">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Estoque</label>
+                        <input type="number" id="prod-estoque" required min="0" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:ring-2 focus:ring-orange-500 outline-none font-medium text-gray-700">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Categoria</label>
+                        <input type="text" id="prod-categoria" value="Geral" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:ring-2 focus:ring-orange-500 outline-none font-medium text-gray-700">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Unidade</label>
+                        <select id="prod-unidade" class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:ring-2 focus:ring-orange-500 outline-none font-medium text-gray-700">
+                            <option value="un">Unidade (un)</option>
+                            <option value="kg">Quilo (kg)</option>
+                            <option value="g">Grama (g)</option>
+                            <option value="L">Litro (L)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Destino (Estoque)</label>
+                    <select id="prod-tipo" class="w-full px-4 py-3 rounded-xl bg-orange-50 border border-orange-100 focus:ring-2 focus:ring-orange-500 outline-none font-bold text-orange-700">
+                        <option value="DIA">Vendas (Dia) - Aparece no PDV</option>
+                        <option value="GERAL">Matéria-Prima (Geral)</option>
+                    </select>
+                </div>
+                
+                <div class="pt-6 flex justify-end gap-3">
+                    <button type="button" id="btn-cancelar-modal" class="px-6 py-3 rounded-xl font-bold text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all">Cancelar</button>
+                    <button type="submit" id="btn-salvar-produto" class="px-6 py-3 rounded-xl font-bold text-white bg-orange-600 hover:bg-orange-700 transition-all shadow-lg shadow-orange-600/30 flex items-center gap-2">
+                        <i data-lucide="save" class="w-4 h-4"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
